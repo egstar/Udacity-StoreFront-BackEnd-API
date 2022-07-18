@@ -22,7 +22,7 @@ Udacity Project ( StoreFront BackEnd API )
 ## ➖ API Restful Routes 
 ###### `▶️ Users Route`
 | Route                   | HTTP Methods | Description                                | Requirements | Usage     |
-| ----------------------- |:------------:| ------------------------------------------ | ------==---- |:--------- |
+| ----------------------- |:------------:| ------------------------------------------ | ------------ |:--------- |
 | **```/user```**         | `[GET]`      | __Index__ of users with user list,         | User token   |    -      |
 | **```/user/:id```**     | `[GET]`      | __Show__ single user using _[**userID**]_  | User token   | `USER_ID` |
 | **```/user/```**        | `[POST]`     | __Create__ a new user | No token required  | `{ "username": "NEW_USER_NAME", "email": "USER_EMAIL", "firstname": "USER_FIRST_NAME", "lastname": "USER_LAST_NAME", "userpass": "USER_PASSWORD" }` |
