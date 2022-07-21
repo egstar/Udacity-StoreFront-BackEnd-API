@@ -1,6 +1,6 @@
 import supertest from 'supertest'
 import dbConn from '../../config/db'
-import { Product, User } from  '../../config/types'
+import { Product, User } from '../../config/types'
 import app from '../../index'
 import { Users } from '../../models/users'
 
@@ -18,16 +18,19 @@ describe('End points test:', () => {
         lastname: 'Last',
     } as User
     const testProd = {
-        pname: "unique product name",
-        pdesc: "The full description of the product may use json",
+        pname: 'unique product name',
+        pdesc: 'The full description of the product may use json',
         pprice: 43210,
     } as Product
     beforeAll(async () => {
         const user = await userModel.create(testUser) // Creating a test user
         testUser.userid = Number(user?.userid)
         const conn = await dbConn.connect()
-        conn.query(`UPDATE users SET rid=($1) WHERE userid=($2)`, [2,testUser.userid]) // Set user role to Admin
-        conn.release();
+        conn.query(`UPDATE users SET rid=($1) WHERE userid=($2)`, [
+            2,
+            testUser.userid,
+        ]) // Set user role to Admin
+        conn.release()
         const response = await request
             .post('/user/login')
             .set('Content-type', 'application/json')
@@ -46,32 +49,36 @@ describe('End points test:', () => {
         conn.release()
     })
 
-    describe(`Product Routes:`, ()=> {
+    describe(`Product Routes:`, () => {
         it('Create a new product', async () => {
             const response = await request
                 .post('/prod/new/')
                 .set('Content-type', 'application/json')
                 .set('Authorization', `Bearer ${token}`)
-                .send({ pname:testProd.pname, pdesc: testProd.pdesc, pprice: testProd.pprice})
-            
-                const newProd = response.body.data
+                .send({
+                    pname: testProd.pname,
+                    pdesc: testProd.pdesc,
+                    pprice: testProd.pprice,
+                })
+
+            const newProd = response.body.data
             testProd.pid = newProd.pid
-            
+
             expect(response.status).toEqual(200)
             expect(newProd.pname).toEqual(testProd.pname)
         })
         it('Get Products list', async () => {
             const response = await request
                 .get(`/prod`)
-                .set('Content-type','application/json')
+                .set('Content-type', 'application/json')
             const products = response.body.data
             expect(response.status).toEqual(200)
             expect(products.length).toEqual(1)
         })
-        it('Get Product\'s details', async () => {
+        it("Get Product's details", async () => {
             const response = await request
                 .get(`/prod/${testProd.pid}`)
-                .set('Content-type','application/json')
+                .set('Content-type', 'application/json')
             const products = response.body.data
             expect(response.status).toEqual(200)
             expect(products.pprice).toEqual(testProd.pprice)

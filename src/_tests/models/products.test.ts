@@ -1,6 +1,6 @@
-import { Product } from "../../config/types"
-import dbConn from "../../config/db"
-import { Products } from "../../models/products"
+import { Product } from '../../config/types'
+import dbConn from '../../config/db'
+import { Products } from '../../models/products'
 
 const prodModel = new Products()
 const testProd = {
@@ -11,8 +11,8 @@ const testProd = {
 } as Product
 
 describe(`API Models test:`, () => {
-    afterAll(async ()=> {
-        const conn = await dbConn.connect();
+    afterAll(async () => {
+        const conn = await dbConn.connect()
         conn.query(`
         DELETE FROM order_products;
         DELETE FROM products;
@@ -20,11 +20,15 @@ describe(`API Models test:`, () => {
         ALTER SEQUENCE users_userid_seq RESTART WITH 1;
         ALTER SEQUENCE products_pid_seq RESTART WITH 1;
         ALTER SEQUENCE orders_orderid_seq RESTART WITH 1;`)
-        conn.release();
+        conn.release()
     })
     describe(`Products model test`, () => {
         it('test [ CREATE PRODUCT ] Class', async () => {
-            const addProduct = await prodModel.create(testProd.pname,testProd.pdesc,testProd.pprice);
+            const addProduct = await prodModel.create(
+                testProd.pname,
+                testProd.pdesc,
+                testProd.pprice
+            )
             expect(addProduct.pname).toMatch(testProd.pname)
         })
         it('test [ SHOW PRODUCT ] Class', async () => {

@@ -9,12 +9,13 @@ function oAuth(req: Request) {
     if (!authHeader) {
         throw new Error('Not Authenticated!')
     }
+    /* eslint-disable @typescript-eslint/no-non-null-assertion */
     const token = authHeader!.split(' ')[1] // Split the string to get the token after the word bearer
     const auth = verify(token as string, jwToken) as JwtPayload
-    if (!auth.user.id ) {
+    if (!auth.user.id) {
         return null
     } else {
-         return auth.user.id
+        return auth.user.id
     }
 }
 
@@ -22,7 +23,7 @@ function isAdmin(req: Request) {
     const authHeader = req.headers.authorization
     const token = authHeader!.split(' ')[1]
     const admin = verify(token as string, jwToken) as JwtPayload
-    if(admin.user.role = 2){
+    if (admin.user.role == 2) {
         return admin.user.id
     } else {
         return null
@@ -35,6 +36,7 @@ function Verify(req: Request, uId?: number) {
         throw new Error('Not authorized!')
     }
     const token = authHeader!.split(' ')[1]
+    /* eslint-enable @typescript-eslint/no-non-null-assertion */
     const decoded = verify(token as string, jwToken) as JwtPayload
     const jwtuserId = decoded.user.id
     const jwtuserRole = decoded.user.role

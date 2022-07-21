@@ -1,7 +1,7 @@
-import {  Users } from '../models/users'
+import { Users } from '../models/users'
 import { User } from '../config/types'
-import express, { NextFunction, Request, Response } from 'express'
-import {isAdmin, Verify, Sign, oAuth } from '../middleware/jwtAuth'
+import express, { Request, Response } from 'express'
+import { isAdmin, Verify, Sign, oAuth } from '../middleware/jwtAuth'
 
 const userModel = new Users()
 
@@ -60,8 +60,7 @@ const create = async (req: Request, res: Response) => {
             userpass,
             rid,
         }
-        
-        
+
         const newUser = await userModel.create(user)
         res.json({
             status: 'Success',
@@ -77,53 +76,44 @@ const create = async (req: Request, res: Response) => {
         }
     }
 }
-
+/* eslint-disable @typescript-eslint/no-unused-vars */
 const setRole = async (req: Request, res: Response) => {
     try {
         const { userid, roleid } = req.body
-        if(!userid || !roleid){
-            res
-            .status(301)
-            .json({
-                "status": "error",
-                "message": "User id or Role are missing, please insert valid user id or role"
+        if (!userid || !roleid) {
+            res.status(301).json({
+                status: 'error',
+                message:
+                    'User id or Role are missing, please insert valid user id or role',
             })
         }
         const authorized = isAdmin(req)
-    
-        if(!authorized){
-            res
-            .status(301)
-            .json({
-                "status": "error"
-                ,"message": "Only admin have access to set user roles"
+
+        if (!authorized) {
+            res.status(301).json({
+                status: 'error',
+                message: 'Only admin have access to set user roles',
             })
-        } 
-         const myid = Number(authorized)
-         
-        if(userid == myid){
-            res
-            .status(401)
-            .json({
-                "status": "error"
-                ,"message": "You cannot change your role"
+        }
+        const myid = Number(authorized)
+
+        if (userid == myid) {
+            res.status(401).json({
+                status: 'error',
+                message: 'You cannot change your role',
             })
         }
         const setUserRole = await userModel.setRole(userid, roleid)
-        if(!setUserRole) {
-            res
-            .status(401)
-            .json({
-                "status": "error",
-                "message": "cannot set user role"
+        if (!setUserRole) {
+            res.status(401).json({
+                status: 'error',
+                message: 'cannot set user role',
             })
         }
-        res
-        .status(200)
-        .json({
-            "status": "success",
-            "data": setUserRole,
-            "message": "User access has been changed successully"
+        res.status(200).json({
+            status: 'success',
+            data: setUserRole,
+            message: 'User access has been changed successully',
         })
     } catch (err) {
         const e = err as Error
@@ -134,7 +124,7 @@ const setRole = async (req: Request, res: Response) => {
         }
     }
 }
-
+/* eslint-enable @typescript-eslint/no-unused-vars */
 const authenticate = async (req: Request, res: Response) => {
     const { user, pass } = req.body
     if (!user || !pass) {

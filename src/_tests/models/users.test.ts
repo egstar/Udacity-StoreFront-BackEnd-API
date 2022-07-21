@@ -1,6 +1,6 @@
-import { User } from "../../config/types"
-import dbConn from "../../config/db";
-import { Users } from "../../models/users";
+import { User } from '../../config/types'
+import dbConn from '../../config/db'
+import { Users } from '../../models/users'
 
 const userModel = new Users()
 const testUser = {
@@ -12,8 +12,8 @@ const testUser = {
 } as User
 
 describe(`API Models:`, () => {
-    afterAll(async ()=> {
-        const conn = await dbConn.connect();
+    afterAll(async () => {
+        const conn = await dbConn.connect()
         conn.query(`
         DELETE FROM order_products;
         DELETE FROM products;
@@ -22,10 +22,9 @@ describe(`API Models:`, () => {
         ALTER SEQUENCE users_userid_seq RESTART WITH 1;
         ALTER SEQUENCE products_pid_seq RESTART WITH 1;
         ALTER SEQUENCE orders_orderid_seq RESTART WITH 1;`)
-        conn.release();
+        conn.release()
     })
     describe(`User model`, () => {
-        
         it('test [ CREATE UUSER ]  Class', async () => {
             const createUser = await userModel.create(testUser)
             testUser.userid = Number(createUser?.userid)
@@ -37,7 +36,7 @@ describe(`API Models:`, () => {
         })
         it('test [ SHOW USER ] Class', async () => {
             const getUser = await userModel.show(testUser.userid)
-            expect(getUser).not.toBeUndefined();
+            expect(getUser).not.toBeUndefined()
         })
     })
 })

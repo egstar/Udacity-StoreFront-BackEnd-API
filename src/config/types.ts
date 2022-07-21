@@ -10,7 +10,7 @@ export type Product = {
 }
 export type Order = {
     userid: number
-    ostatus:string
+    ostatus: string
     ototal: number
     products: orderProduct[]
 }

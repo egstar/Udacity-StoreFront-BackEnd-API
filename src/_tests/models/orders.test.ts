@@ -1,8 +1,8 @@
-import { Order, User } from "../../config/types"
-import dbConn from "../../config/db"
-import { Orders } from "../../models/orders"
-import { Products } from "../../models/products"
-import { Users } from "../../models/users"
+import { Order, User } from '../../config/types'
+import dbConn from '../../config/db'
+import { Orders } from '../../models/orders'
+import { Products } from '../../models/products'
+import { Users } from '../../models/users'
 
 const orderModel = new Orders()
 const prodModel = new Products()
@@ -12,7 +12,7 @@ const testOrder = {
     userid: 1,
     ostatus: 'Complete',
     ototal: 1000,
-    products: [{"pid": 1, "qty":5}],
+    products: [{ pid: 1, qty: 5 }],
 } as Order
 const testUser = {
     username: 'test_user',
@@ -23,15 +23,15 @@ const testUser = {
 } as User
 
 describe(`API Models test:`, () => {
-    beforeAll(async () =>{
-       const addUser = await userModel.create(testUser)
-       testUser.userid = addUser?.userid as number
-        await prodModel.create('prod1','prod1 desc',200)
-        await prodModel.create('prod2','prod2 desc',50)
-        await prodModel.create('prod3','prod3 desc',100)
+    beforeAll(async () => {
+        const addUser = await userModel.create(testUser)
+        testUser.userid = addUser?.userid as number
+        await prodModel.create('prod1', 'prod1 desc', 200)
+        await prodModel.create('prod2', 'prod2 desc', 50)
+        await prodModel.create('prod3', 'prod3 desc', 100)
     })
-    afterAll(async ()=> {
-        const conn = await dbConn.connect();
+    afterAll(async () => {
+        const conn = await dbConn.connect()
         conn.query(`
         DELETE FROM order_products;
         DELETE FROM orders;
@@ -40,10 +40,9 @@ describe(`API Models test:`, () => {
         ALTER SEQUENCE users_userid_seq RESTART WITH 1;
         ALTER SEQUENCE products_pid_seq RESTART WITH 1;
         ALTER SEQUENCE orders_orderid_seq RESTART WITH 1;`)
-        conn.release();
+        conn.release()
     })
     describe(`Orders model test`, () => {
-        
         it('test [ NEW ORDER ]  Class', async () => {
             const newOrder = await orderModel.create(testOrder)
             expect(newOrder).toBeDefined()
@@ -53,7 +52,10 @@ describe(`API Models test:`, () => {
             expect(ordersList.length).toEqual(1)
         })
         it('test [ SHOW ORDER BY USER ] Class', async () => {
-            const getOrder = await orderModel.currentOrder(testUser.userid, testOrder.ostatus)
+            const getOrder = await orderModel.currentOrder(
+                testUser.userid,
+                testOrder.ostatus
+            )
             expect(getOrder.ototal).toBe(testOrder.ototal)
         })
     })

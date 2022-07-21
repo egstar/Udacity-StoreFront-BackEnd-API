@@ -2,7 +2,6 @@ import dbConn from '../config/db'
 import bcrypt from 'bcrypt'
 import { User } from '../config/types'
 
-
 const pepper = process.env.BCRYPT_PASSWORD
 const saltRounds = process.env.SALT_ROUNDS as unknown as number
 
@@ -46,7 +45,7 @@ export class Users {
             ])
 
             conn.release()
-            if(!userAdd) {
+            if (!userAdd) {
                 return null
             }
             return userAdd.rows[0]
@@ -54,7 +53,6 @@ export class Users {
             throw new Error(
                 `Registeration failed with user ${u.username} with error: ${err}`
             )
-
         }
     }
     async setRole(id: number, role: number): Promise<User> {
@@ -62,10 +60,13 @@ export class Users {
             const conn = await dbConn.connect()
             const sqlQuery = `UPDATE users SET rid=($2) where userid=($1) RETURNING rid`
             const newRole = await conn.query(sqlQuery, [id, role])
-            const roleName= await conn.query(`SELECT rolename FROM roles WHERE rid=($1)`,[newRole.rows[0].rid])
+            const roleName = await conn.query(
+                `SELECT rolename FROM roles WHERE rid=($1)`,
+                [newRole.rows[0].rid]
+            )
             conn.release()
             if (!newRole) {
-                throw new Error('Can\'t update user role')
+                throw new Error("Can't update user role")
             }
             return roleName.rows[0].rolename
         } catch (err) {
@@ -87,7 +88,7 @@ export class Users {
             throw new Error(`${err}`)
         }
     }
-    
+
     async authenticate(user: string, pass: string): Promise<User | null> {
         try {
             const conn = await dbConn.connect()

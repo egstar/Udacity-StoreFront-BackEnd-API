@@ -21,26 +21,61 @@ Udacity Project ( StoreFront BackEnd API )
 
 ## ➖ API Restful Routes 
 ###### `▶️ Users Route`
-| Route                   | HTTP Methods | Description                                | Requirements | Usage     |
-| ----------------------- |:------------:| ------------------------------------------ | ------------ |:--------- |
-| **```/user```**         | `[GET]`      | __Index__ of users with user list,         | User token   |    -      |
-| **```/user/:id```**     | `[GET]`      | __Show__ single user using _[**userID**]_  | User token   | `USER_ID` |
-| **```/user/signup```**  | `[POST]`     | __Create__ a new user | No token required  | `{ "username": "NEW_USER_NAME", "email": "USER_EMAIL", "firstname": "USER_FIRST_NAME", "lastname": "USER_LAST_NAME", "userpass": "USER_PASSWORD" }` |
+| Route                   | HTTP Methods | Description                                |    Requirements    | Usage     |
+| ----------------------- |:------------:| ------------------------------------------ | ------------------ |:--------- |
+| **```/user```**         | `[GET]`      | __Index__ of users with user list,         | User token         |    -      |
+| **```/user/:id```**     | `[GET]`      | __Show__ single user using _[**userID**]_  | User token         |  `userid` |
+| **```/user/login```**   | `[POST]`     | __Authenticate__ the current user          |  Generates  Token  | `{ "user": "CURRENT_USERNAMe", "pass": "CURRENT_PASSWORD"}` |
+| **```/user/signup```**  | `[POST]`     | __Create__ a new user                      | No token required  | `{ "username": "NEW_USER_NAME", "email": "USER_EMAIL", "firstname": "USER_FIRST_NAME", "lastname": "USER_LAST_NAME", "userpass": "USER_PASSWORD" }` |
 
+<sub> *Users requirments* </sub>
 
+1) to get single user info use [GET] with path `[ /user/:id ]` using the user id
+2) generate a token use [POST] with path `[ /user/login ]` and send JSON row with _{"user":`USER-USERNAME`, "pass":`USER-PASSWORD`}_
+3) to create a user use [POST] with path `[ /user/signup ]` and send JSON row with 
+  _{"username":`USERNAME`, "firstname":`FIRSTNAME`, "lastname":`LASTNAME`, "email":`EMAIL`, "userpass":`PASSWORD`}_
+
+> ***NOTE***
+> Please use the [ *./db_data/init_data.sql* ]  as a data population for tables,
+>
+> you can use __USER__: _admin_, __PASS__: _h4sh3dp4ssw0rd_ [**using the Bcrypt default password**]
+
+----
 ###### `▶️ Products Route`
-| Route               | HTTP Methods |            Description                     | Requirements | Data to send |
-| ------------------- |:------------:| ------------------------------------------ | ------------ | ------------ |
-| **```/prod```**     | `[GET]`      | __Index__ of products with list            | User token   | -            |
-| **```/prod/:id```** | `[GET]`      | __Show__ single Product by _[**pordID**]_  | User token   | `PRODUCT_ID` |
-| **```/prod/new```** | `[POST]`     | __Create__ a new Product                   | No token     | `{ "pname": "PRODUCT_NAME", "pdesc": "PRODUCT_DESCRIPTION", "pprice": PRODUCT_PRICE_AS NUMBER" }` |
+|  Route               | HTTP Methods |            Description                     | Requirements   | Data to send |
+| -------------------- |:------------:| ------------------------------------------ | -------------- | ------------ |
+| **```/prod```**      | `[GET]`      | __Index__ of products with list            | No token       | -            |
+| **```/prod/:pid```** | `[GET]`      | __Show__ single Product by _[**pordID**]_  | No token       | `PRODUCT_ID` |
+| **```/prod/new```**  | `[POST]`     | __Create__ a new Product                   | Token required | `{"pname": "PRODUCT_NAME", "pdesc": "PRODUCT_DESCRIPTION", "pprice": PRODUCT_PRICE}` |
 
+<sub> *Products requirments* </sub>
+
+1) get all products list use [GET] with path`[ /prod/ ]` _(no token required)_
+2) get single product info use [GET] with path `[ /prod/:pid ]` using the product id & _(no token required)_
+3) to create a product use [POST] with path `[ /prod/new ]` and send _(Admin token)_ and JSON row with 
+{ "pname": `PRODUCT-NAME`,"pdesc": `PRODUCT-DESCRIPTION`, "pprice": `PRODUCT-PRICE` }
+
+----
 ###### `▶️ Orders Route`
-|             Route            | HTTP Methods |                  Description               | Requirements | Data to send |
-| ---------------------------- |:------------:| ------------------------------------------ | ------------ | ------------ |
-| **```/order```**             |   `[GET]`    | __Index__ of Orders list                   | User token   |     -        |
-| **```/order/:id/:userid```** |   `[GET]`    | __Show__  order by _[**userID&orderId**]_  | User token   |  `ORDER_ID`  |
-| **```/order/new```**         |   `[POST]`   | __Make__ a new order                       |  No token    | `{ "userid": ORDERING_USER_ID, "products": "{'pid': [Products_ID], 'qty': [QUANTITY_FOR_EACH] }", "ostatus": "ACITVE_OR_COMPLETE" }` |
+|             Route         | HTTP Methods |                  Description                   | Requirements |    Data to send     |
+| ------------------------- |:------------:| ---------------------------------------------- | ------------ | ------------------- |
+| **```/orders```**         |   `[GET]`    | __Index__ of Orders list                       |  User token  |         -           |
+| **```/user/:id/order```** |   `[GET]`    | __Show__  order by __[**OrderID**]__           |  User token  |      `orderid`      |
+| **```/order/:id```**      |   `[GET]`    | __Show__ order by  _[**userID&orderStatus**]_  |  User token  | `userid`, `Ostatus` |
+| **```/order/new```**      |   `[POST]`   | __Make__ a new order                           |  User Token  | `{ "userid": ORDERING_USER_ID, "products": "{'pid': [Products_ID], 'qty': [QUANTITY_FOR_EACH] }", "ostatus": "ACITVE_OR_COMPLETE" }` |
+
+<sub> *Orders requirments* </sub>
+
+1) get all orders list use [GET] with path`[ /orders/ ]` _(User token required)_
+2) get single user _Active_ order [GET] with path `[ /user/:id/order ]` using the  _(token required)_ ,
+  { "userid": `USER-ID`, "ostatus": ["`ACTIVE`"|"`COMPLETE`"] }
+
+3) to get a single order by _[orderId]_ use [GET] with path `[ /order/:id ]` using _(ORDER-ID)_,  _(required user token)_
+4) to create anew order use [POST] with path `[ /order/new ]` and send _(user token)_ and JSON row with 
+{ "products": [
+    {"pid":`PRODUCT-ID`, "qty":`QUANTITY-OF-PRODUCT`},
+    {"pid":`ANOTHER-PRODUCT`, "qty":`QUANTITY-OF-PRODUCT`}
+    ]}
 
 ------
 
@@ -60,7 +95,7 @@ Udacity Project ( StoreFront BackEnd API )
 | **```firstname```** | `VARCHAR(25)`  | __NOT NULL__                    |        -     |
 | **```lastname```**  | `VARCHAR(25)`  | __NOT NULL__                    |        -     |
 | **```userpass```**  | `VARCHAR(255)` | __NOT NULL__                    |        -     |
-| **```roleid```**    |     `INT`      | __DEFAULT 1__                   | __roles(rid)__, __FOREIGN KEY__ ( ON *DELETE* SET DEFAULT ON *UPDATE* CASCADE ) |
+| **```rid```**       |     `INT`      | __DEFAULT 1__                   | __roles(rid)__, __FOREIGN KEY__ ( ON *DELETE* SET DEFAULT ON *UPDATE* CASCADE ) |
 
 ###### `▶️ Products table`
 |    Column name   |   Data Type   |           Constraints         |  References  |
