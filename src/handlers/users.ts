@@ -1,6 +1,7 @@
-import { User, Users } from '../models/users'
-import express, { Request, Response } from 'express'
-import { Verify, Sign, oAuth } from '../middleware/jwtAuth'
+import {  Users } from '../models/users'
+import { User } from '../config/types'
+import express, { NextFunction, Request, Response } from 'express'
+import {isAdmin, Verify, Sign, oAuth } from '../middleware/jwtAuth'
 
 const userModel = new Users()
 
@@ -21,7 +22,7 @@ const index = async (req: Request, res: Response) => {
 
 const show = async (req: Request, res: Response) => {
     try {
-        const uId = Number(req.body.uid)
+        const uId = Number(req.params.id)
         if (!uId) {
             return res
                 .status(400)
@@ -42,28 +43,30 @@ const show = async (req: Request, res: Response) => {
 
 const create = async (req: Request, res: Response) => {
     try {
-        const { uname, email, fname, lname, passwd } = req.body
+        const { username, email, firstname, lastname, userpass } = req.body
         const userid = 0
-        const rolename = 'User'
-        if (!(uname || email || fname || lname || passwd)) {
+        const rid = 1
+        if (!(username || email || firstname || lastname || userpass)) {
             return res
                 .status(400)
                 .send('Please Enter all required infromation.')
         }
         const user: User = {
             userid,
-            uname,
+            username,
             email,
-            fname,
-            lname,
-            passwd,
-            rolename,
+            firstname,
+            lastname,
+            userpass,
+            rid,
         }
+        
+        
         const newUser = await userModel.create(user)
         res.json({
             status: 'Success',
             data: { newUser },
-            message: `User ${uname} has been created succefully.`,
+            message: `User ${username} has been created succefully.`,
         })
     } catch (err) {
         const e = err as Error
@@ -75,22 +78,53 @@ const create = async (req: Request, res: Response) => {
     }
 }
 
-const update = async (req: Request, res: Response) => {
-    try {
-        const { uid, un, fn, ln, pwd, ul, us } = req.body
-    } catch (err) {
-        const e = err as Error
-        if (e.message.includes('')) {
-            res.status(500).send(e.message)
-        } else {
-            res.status(401).send(e.message)
-        }
-    }
-}
-
 const setRole = async (req: Request, res: Response) => {
     try {
-        const { uid, urole } = req.body
+        const { userid, roleid } = req.body
+        if(!userid || !roleid){
+            res
+            .status(301)
+            .json({
+                "status": "error",
+                "message": "User id or Role are missing, please insert valid user id or role"
+            })
+        }
+        const authorized = isAdmin(req)
+    
+        if(!authorized){
+            res
+            .status(301)
+            .json({
+                "status": "error"
+                ,"message": "Only admin have access to set user roles"
+            })
+        } 
+         const myid = Number(authorized)
+         
+        if(userid == myid){
+            res
+            .status(401)
+            .json({
+                "status": "error"
+                ,"message": "You cannot change your role"
+            })
+        }
+        const setUserRole = await userModel.setRole(userid, roleid)
+        if(!setUserRole) {
+            res
+            .status(401)
+            .json({
+                "status": "error",
+                "message": "cannot set user role"
+            })
+        }
+        res
+        .status(200)
+        .json({
+            "status": "success",
+            "data": setUserRole,
+            "message": "User access has been changed successully"
+        })
     } catch (err) {
         const e = err as Error
         if (e.message.includes('')) {
@@ -98,56 +132,18 @@ const setRole = async (req: Request, res: Response) => {
         } else {
             res.status(401).send(e.message)
         }
-    }
-}
-
-const userDel = async (req: Request, res: Response) => {
-    try {
-        if (!req.body.userid) {
-            return res.status(401).send('Please insert a valid user id!')
-        }
-        const userId = Number(req.body.userid)
-        const userAuth = Verify(req, userId)
-        if (!userAuth) {
-            res.json({
-                status: ' Failed.',
-                data: 'user ' + userAuth,
-                message: 'User is not authorized for this action.',
-            })
-        }
-        if (userAuth != userId) {
-            const usrRole = await userModel.getRole(userAuth)
-
-            if (Number(usrRole) !== 1) {
-                res.json({
-                    status: 'Failed',
-                    message: 'You cannot do this action',
-                })
-            }
-        }
-        const delUser = await userModel.delete(userId)
-        if (delUser) {
-            res.json({
-                status: 'Success',
-                username: delUser,
-                message: 'Deleted successfully',
-            })
-        }
-    } catch (err) {
-        const e = err as Error
-        return res.status(401).send(e.message)
     }
 }
 
 const authenticate = async (req: Request, res: Response) => {
-    const { uname, pwd } = req.body
-    if (!uname || !pwd) {
+    const { user, pass } = req.body
+    if (!user || !pass) {
         return res
             .status(400)
             .send('You have to enter a valid user name and password.')
     }
     try {
-        const uInfo = await userModel.authenticate(uname, pwd)
+        const uInfo = await userModel.authenticate(user, pass)
         if (uInfo === null) {
             res.status(401)
             res.json({
@@ -155,11 +151,11 @@ const authenticate = async (req: Request, res: Response) => {
                 message: 'Invalid username or password',
             })
         } else {
-            const token = Sign(uInfo.userid, uInfo.rolename)
+            const token = Sign(uInfo.userid, uInfo.rid)
             res.json({
                 status: 'Success',
                 data: { uInfo, token },
-                message: `Successfully logged in, Welcome ${uname}`,
+                message: `Successfully logged in, Welcome ${user}`,
             })
         }
     } catch (err) {
@@ -170,13 +166,9 @@ const authenticate = async (req: Request, res: Response) => {
 
 const UserRoutes = (app: express.Application) => {
     app.get('/user/', index)
-    app.get('/user/dashboard', index)
-    app.get('/user/profile', show)
+    app.get('/user/:id', show)
     app.post('/user/signup', create)
-    app.put('/user/edit', update)
-    app.delete('/user/del', userDel)
     app.post('/user/login', authenticate)
-    app.put('/admin/usr/setrole', setRole)
 }
 
 export default UserRoutes

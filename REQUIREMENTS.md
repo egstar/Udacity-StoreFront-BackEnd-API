@@ -25,22 +25,22 @@ Udacity Project ( StoreFront BackEnd API )
 | ----------------------- |:------------:| ------------------------------------------ | ------------ |:--------- |
 | **```/user```**         | `[GET]`      | __Index__ of users with user list,         | User token   |    -      |
 | **```/user/:id```**     | `[GET]`      | __Show__ single user using _[**userID**]_  | User token   | `USER_ID` |
-| **```/user/```**        | `[POST]`     | __Create__ a new user | No token required  | `{ "username": "NEW_USER_NAME", "email": "USER_EMAIL", "firstname": "USER_FIRST_NAME", "lastname": "USER_LAST_NAME", "userpass": "USER_PASSWORD" }` |
+| **```/user/signup```**  | `[POST]`     | __Create__ a new user | No token required  | `{ "username": "NEW_USER_NAME", "email": "USER_EMAIL", "firstname": "USER_FIRST_NAME", "lastname": "USER_LAST_NAME", "userpass": "USER_PASSWORD" }` |
 
 
 ###### `▶️ Products Route`
 | Route               | HTTP Methods |            Description                     | Requirements | Data to send |
 | ------------------- |:------------:| ------------------------------------------ | ------------ | ------------ |
-| **```/prod```**     | `[GET]`      | __Index__ of users with user list,         | User token   | -            |
-| **```/prod/:id```** | `[GET]`      | __Show__ single user using _[**userID**]_  | User token   | `PRODUCT_ID` |
-| **```/prod/```**    | `[POST]`     | __Create__ a new user                      | No token     | `{ "pname": "PRODUCT_NAME", "pdesc": "PRODUCT_DESCRIPTION", "pprice": PRODUCT_PRICE_AS NUMBER" }` |
+| **```/prod```**     | `[GET]`      | __Index__ of products with list            | User token   | -            |
+| **```/prod/:id```** | `[GET]`      | __Show__ single Product by _[**pordID**]_  | User token   | `PRODUCT_ID` |
+| **```/prod/new```** | `[POST]`     | __Create__ a new Product                   | No token     | `{ "pname": "PRODUCT_NAME", "pdesc": "PRODUCT_DESCRIPTION", "pprice": PRODUCT_PRICE_AS NUMBER" }` |
 
 ###### `▶️ Orders Route`
-|         Route        | HTTP Methods |                  Description               | Requirements | Data to send |
-| -------------------- |:------------:| ------------------------------------------ | ------------ | ------------ |
-| **```/order```**     |   `[GET]`    | __Index__ of users with user list          | User token   |     -        |
-| **```/order/:id```** |   `[GET]`    | __Show__ single user using _[**userID**]_  | User token   |  `ORDER_ID`  |
-| **```/order/```**    |   `[POST]`   | __Make__ a new order                       |  No token    | `{ "userid": ORDERING_USER_ID, "products": "{'pid': [Products_ID], 'qty': [QUANTITY_FOR_EACH] }", "ostatus": "ACITVE_OR_COMPLETE" }` |
+|             Route            | HTTP Methods |                  Description               | Requirements | Data to send |
+| ---------------------------- |:------------:| ------------------------------------------ | ------------ | ------------ |
+| **```/order```**             |   `[GET]`    | __Index__ of Orders list                   | User token   |     -        |
+| **```/order/:id/:userid```** |   `[GET]`    | __Show__  order by _[**userID&orderId**]_  | User token   |  `ORDER_ID`  |
+| **```/order/new```**         |   `[POST]`   | __Make__ a new order                       |  No token    | `{ "userid": ORDERING_USER_ID, "products": "{'pid': [Products_ID], 'qty': [QUANTITY_FOR_EACH] }", "ostatus": "ACITVE_OR_COMPLETE" }` |
 
 ------
 

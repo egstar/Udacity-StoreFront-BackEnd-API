@@ -1,4 +1,4 @@
-import config from '../config/config'
+import config from './config'
 import { Pool } from 'pg'
 const connPort: number = config.dbPort as unknown as number
 let dbName
