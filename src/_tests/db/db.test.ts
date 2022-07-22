@@ -1,9 +1,18 @@
 import dbConn from '../../config/db'
 {
     describe('Database tests:', () => {
+        beforeAll(async () => {
+            const conn = await dbConn.connect()
+            await conn.query(`
+            DELETE FROM roles;
+            ALTER SEQUENCE roles_rid_seq RESTART WITH 1;
+            INSERT INTO roles (rolename) VALUES ('User'), ('Admin');
+            `)
+            conn.release()
+        })
         afterAll(async () => {
             const conn = await dbConn.connect()
-            conn.query(`
+            await conn.query(`
             DELETE FROM order_products;
             DELETE FROM orders;
             DELETE FROM products;
