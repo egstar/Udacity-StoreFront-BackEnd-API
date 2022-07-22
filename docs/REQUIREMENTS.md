@@ -95,7 +95,7 @@ Udacity Project ( StoreFront BackEnd API )
 | **```firstname```** | `VARCHAR(25)`  | __NOT NULL__                    |        -     |
 | **```lastname```**  | `VARCHAR(25)`  | __NOT NULL__                    |        -     |
 | **```userpass```**  | `VARCHAR(255)` | __NOT NULL__                    |        -     |
-| **```rid```**       |     `INT`      | __DEFAULT 1__                   | __roles(rid)__, __FOREIGN KEY__ ( ON *DELETE* SET DEFAULT ON *UPDATE* CASCADE ) |
+| **```rid```**       |     `INT`      | __DEFAULT(1)__, __FOREIGN KEY__ | __roles(rid)__ ( ON *DELETE* SET DEFAULT ON *UPDATE* CASCADE ) |
 
 ###### `▶️ Products table`
 |    Column name   |   Data Type   |           Constraints         |  References  |
@@ -112,14 +112,14 @@ Udacity Project ( StoreFront BackEnd API )
 | **```odate```**    |    `DATE`     | __DEFAULT GETDATE()__          |       -      |
 | **```ostatus```**  | `VARCHAR(50)` | __DEFAULT "Active"__           |       -      |
 | **```ototal```**   |     `INT`     | __NOT NULL__                   |       -      |
-| **```userid```**   |     `INT`     | __DEFAULT 1__                  | __users(userid)__, __FOREIGN KEY__ ( ON _DELETE_ SET DEFAULT ) |
+| **```userid```**   |     `INT`     | __DEFAULT 1__, __FOREIGN KEY__ | __users(userid)__ ( ON _DELETE_ SET DEFAULT ) |
 
 ###### `▶️ Order products table`
-|    Column name    | Data Type   |  Constraints |                          References                         |
-| ----------------- |:-----------:| ------------ | ----------------------------------------------------------- |
-| **```orderid```** |    `INT`    | __NOT NULL__ | __orders(orderid)__, __FOREIGN KEY__ ( ON _DELETE_ CASCADE) |
-| **```pid```**     |    `INT`    | __NOT NULL__ | __products(pid)__, __FOREIGN KEY__ ( ON _DELETE_ NO ACTION) |
-| **```pqnty```**   |    `INT`    | __NOT NULL__ |                             -                               |
+|    Column name    | Data Type   |        Constraints            |                References                  |
+| ----------------- |:-----------:| ----------------------------- | ------------------------------------------ |
+| **```orderid```** |    `INT`    | __NOT NULL__, __FOREIGN KEY__ | __orders(orderid)__ ( ON _DELETE_ CASCADE) |
+| **```pid```**     |    `INT`    | __NOT NULL__, __FOREIGN KEY__ | __products(pid)__ ( ON _DELETE_ NO ACTION) |
+| **```pqnty```**   |    `INT`    | __NOT NULL__                  |                  -                         |
 
 
 ###### `▶️ Roles table`
