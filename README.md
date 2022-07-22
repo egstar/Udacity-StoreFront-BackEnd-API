@@ -163,7 +163,7 @@ We've added (2) files for Data population,
   - **Database** tests includes [ <sub>***Database Connection*** | ***INSERT*** | ***SELECT*** | ***UPDATE*** | ***DELETE*** </sub>]
   - **Models** tests includes [ <sub>***Users Model*** | ***Orders Model*** | ***Products Model*** </sub>]
 
-to check the run the unit testing, run the below command
+to check the tests run the unit testing using the below command
 
         npm run test
 
