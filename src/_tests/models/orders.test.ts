@@ -24,6 +24,16 @@ const testUser = {
 
 describe(`API Models test:`, () => {
     beforeAll(async () => {
+        const conn = await dbConn.connect()
+        await conn.query(`
+        DELETE FROM roles;
+        DELETE FROM orders;
+        ALTER SEQUENCE orders_orderid_seq RESTART WITH 1;
+        ALTER SEQUENCE roles_rid_seq RESTART WITH 1;
+        INSERT INTO roles (rolename) VALUES ('User');
+        INSERT INTO roles (rolename) VALUES ('Admin');
+        `)
+        conn.release();
         const addUser = await userModel.create(testUser)
         testUser.userid = addUser?.userid as number
         await prodModel.create('prod1', 'prod1 desc', 200)
@@ -32,7 +42,7 @@ describe(`API Models test:`, () => {
     })
     afterAll(async () => {
         const conn = await dbConn.connect()
-        conn.query(`
+        await conn.query(`
         DELETE FROM order_products;
         DELETE FROM orders;
         DELETE FROM products;

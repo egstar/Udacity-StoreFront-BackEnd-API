@@ -150,7 +150,7 @@ to do that we need to run this command
 
 We've added (2) files for Data population, 
   - [***init_data.sql***] is used to the main users and some orders for app start-up
-  - [***test_data.sql***] is used to add the roles only (PLEASE USE IT FOR UNIT TESTING OR IT WILL FAIL)
+  - [***roles_data.sql***] is used to add the roles only (PLEASE USE IT FOR UNIT TESTING OR IT WILL FAIL)
 ----
 ## ➖ APP Running and Usage
 ### `▶️ Testing using Jasmine`
@@ -169,7 +169,7 @@ to check the run the unit testing, run the below command
 
 > ***PLEASE NOTE THAT***
 - you need to set the value of **DB_TEST** in the _.env_ file.
-- populated the ***./db_data/test_data.sql*** to add _admin_ & _user_ privileges into the ***roles*** table
+- populated the ***./db_data/roles_data.sql*** to add _admin_ & _user_ privileges into the ***roles*** table
 ### `▶️ Starting the server`
 
 Now it's time to see how it works.

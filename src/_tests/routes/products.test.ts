@@ -23,10 +23,17 @@ describe('End points test:', () => {
         pprice: 43210,
     } as Product
     beforeAll(async () => {
+        const conn = await dbConn.connect()
+        await conn.query(`
+        DELETE FROM roles;
+        ALTER SEQUENCE roles_rid_seq RESTART WITH 1;
+        INSERT INTO roles (roleName) VALUES ('User');
+        INSERT INTO roles (roleName) VALUES ('Admin');
+        `)
         const user = await userModel.create(testUser) // Creating a test user
         testUser.userid = Number(user?.userid)
-        const conn = await dbConn.connect()
-        conn.query(`UPDATE users SET rid=($1) WHERE userid=($2)`, [
+        
+        await conn.query(`UPDATE users SET rid=($1) WHERE userid=($2)`, [
             2,
             testUser.userid,
         ]) // Set user role to Admin
